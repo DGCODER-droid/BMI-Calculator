@@ -14,6 +14,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import java.text.DecimalFormat;
+
 public class MainActivity extends AppCompatActivity {
     //Class variables are also called "Fields"
     private TextView resultText;
@@ -53,12 +55,13 @@ public class MainActivity extends AppCompatActivity {
         calculate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                calculatebmi();
+                double bmiResult = calculatebmi();
+                displayResult(bmiResult);
             }
         });
     }
 
-    private void calculatebmi() {
+    private double calculatebmi() {
         String ageText = age.getText().toString();
         String feetText = feet.getText().toString();
         String inchesText = inches.getText().toString();
@@ -67,16 +70,30 @@ public class MainActivity extends AppCompatActivity {
         int feet = Integer.parseInt(feetText);
         int inches = Integer.parseInt(inchesText);
         int weight = Integer.parseInt(weightText);
-        int totalInches  = (feet * 12) + inches;
+        int totalInches = (feet * 12) + inches;
 
         //Height in meters is the inches multiplied by 0.0254
         double heightInMeters = totalInches * 0.0254;
 
         //BMI formula = weight in kg divided by height in meters squared
         double bmi = weight / (heightInMeters * heightInMeters);
+        return bmi;
 
-        // We must convert the decimal / double into a String for our TextView
-        String bmiTextResult = String.valueOf(bmi);
-        resultText.setText(bmiTextResult);
+    }
+
+    private void displayResult(double bmi) {
+        DecimalFormat myDecimalFormatter = new DecimalFormat("0.00");
+
+        String bmiTextResult = myDecimalFormatter.format(bmi);
+
+        String fullResultString;
+        if (bmi < 18.5) {
+            fullResultString = bmiTextResult + " - You are underweight";
+        } else if (bmi > 25) {
+            fullResultString = bmiTextResult + " - You are overweight";
+        } else {
+            fullResultString = bmiTextResult + " - You are a healthy weight";
+        }
+        resultText.setText(fullResultString);
     }
 }
