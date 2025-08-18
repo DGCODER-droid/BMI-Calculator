@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void findViews() {
         resultText = findViewById(R.id.text_view_result);
-        resultText.setText("This is the updated text");
+
         male = findViewById(R.id.radio_button_male);
         female = findViewById(R.id.radio_button_female);
         age = findViewById(R.id.edit_text_age);
@@ -56,17 +56,44 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 double bmiResult = calculatebmi();
-                displayResult(bmiResult);
+                String ageText = age.getText().toString();
+                int age = Integer.parseInt(ageText);
+                if (age >= 18) {
+                    displayResult(bmiResult);
+                } else {
+                    displayGuidance(bmiResult);
+                }
+
             }
         });
     }
 
+    private void displayGuidance(double bmi) {
+        DecimalFormat myDecimalFormatter = new DecimalFormat("0.00");
+
+        String bmiTextResult = myDecimalFormatter.format(bmi);
+
+        String fullResult;
+        if(male.isChecked()){
+            //Display boy guidance
+            fullResult = bmiTextResult + " - As you are under 18, please consult with your doctor for the healthy range for boys";
+        }else if(female.isChecked()){
+            //Display girl guidance
+            fullResult = bmiTextResult + " - As you are under 18, please consult with your doctor for the healthy range for girls";
+
+        }else{
+            //Display general guidance
+            fullResult = bmiTextResult + " - As you are under 18, please consult with your doctor for the healthy range";
+        }
+        resultText.setText(fullResult);
+    }
+
     private double calculatebmi() {
-        String ageText = age.getText().toString();
+
         String feetText = feet.getText().toString();
         String inchesText = inches.getText().toString();
         String weightText = weight.getText().toString();
-        int age = Integer.parseInt(ageText);
+
         int feet = Integer.parseInt(feetText);
         int inches = Integer.parseInt(inchesText);
         int weight = Integer.parseInt(weightText);
